@@ -30,6 +30,7 @@ import scala.language.higherKinds
 import scala.util.Try
 import scala.language.experimental.macros
 import Binding._
+import scala.annotation.nowarn
 
 object FutureBinding {
   def apply[A](future: Future[A])(implicit executor: ExecutionContext) = new FutureBinding(future)
@@ -47,6 +48,7 @@ final class FutureBinding[A](future: Future[A])(implicit executor: ExecutionCont
   override def value = future.value
 
   @deprecated(message = "Use [[value]] instead", since = "11.0.0")
+  @nowarn
   @inline
   override def get = value
 

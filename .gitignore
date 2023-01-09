@@ -32,4 +32,7 @@ local.sbt
 secret/
 .metals/
 .bloop/
-project/metals.sbt
+metals.sbt
+.bsp/
+.vscode/launch.json
+*.scala.semanticdb
