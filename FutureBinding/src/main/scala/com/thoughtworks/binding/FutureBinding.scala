@@ -33,16 +33,19 @@ import Binding._
 import scala.annotation.nowarn
 
 object FutureBinding {
-  def apply[A](future: Future[A])(implicit executor: ExecutionContext) = new FutureBinding(future)
+  def apply[A](future: Future[A])(implicit executor: ExecutionContext) =
+    new FutureBinding(future)
 }
 
-/**
-  * A wrapper that wraps [[scala.concurrent.Future]] to a [[Binding]].
+/** A wrapper that wraps [[scala.concurrent.Future]] to a [[Binding]].
   *
-  * @note Because all [[Binding]] (including this [[FutureBinding]]) are not thread safe,
-  *       you must guarantee `executor` running sequentially.
+  * @note
+  *   Because all [[Binding]] (including this [[FutureBinding]]) are not thread
+  *   safe, you must guarantee `executor` running sequentially.
   */
-final class FutureBinding[A](future: Future[A])(implicit executor: ExecutionContext) extends Binding[Option[Try[A]]] {
+final class FutureBinding[A](future: Future[A])(implicit
+    executor: ExecutionContext
+) extends Binding[Option[Try[A]]] {
 
   @inline
   override def value = future.value
@@ -54,7 +57,9 @@ final class FutureBinding[A](future: Future[A])(implicit executor: ExecutionCont
 
   private val publisher = new SafeBuffer[ChangedListener[Option[Try[A]]]]
 
-  override protected def removeChangedListener(listener: ChangedListener[Option[Try[A]]]): Unit = {
+  override protected def removeChangedListener(
+      listener: ChangedListener[Option[Try[A]]]
+  ): Unit = {
     publisher.-=(listener)
   }
 
@@ -67,7 +72,9 @@ final class FutureBinding[A](future: Future[A])(implicit executor: ExecutionCont
     }
   }
 
-  override protected def addChangedListener(listener: ChangedListener[Option[Try[A]]]): Unit = {
+  override protected def addChangedListener(
+      listener: ChangedListener[Option[Try[A]]]
+  ): Unit = {
     if (!isHandlerRegistered) {
       isHandlerRegistered = true
       if (!future.isCompleted) {
